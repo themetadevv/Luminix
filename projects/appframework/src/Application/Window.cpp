@@ -1,5 +1,9 @@
 
 #include "afpch.h"
+#include "assertion.h"
+
+#include "Logger.h"
+#include "FrameManager.h"
 #include "Window.h"
 
 std::string_view GetVideoModeString(VideoMode vm) {
@@ -26,27 +30,7 @@ std::string_view GetVideoModeString(VideoMode vm) {
 	}
 }
 
-// <------------------ Operator Overloads ------------------>
-
-WindowState operator|(WindowState a, WindowState b) {
-	return static_cast<WindowState>(static_cast<int>(a) | static_cast<int>(b));
-}
-
-WindowState& operator|=(WindowState& a, WindowState b) {
-	a = a | b;
-	return a;
-}
-
-WindowState operator&(WindowState a, WindowState b) {
-	return static_cast<WindowState>(static_cast<int>(a) & static_cast<int>(b));
-}
-
-WindowState& operator&=(WindowState& a, WindowState b) {
-	a = a & b;
-	return a;
-}
-
-namespace Application {
+namespace af {
 	static bool s_Initialized = false;
 
 	void Window::SaveWindowedSizePos() {
@@ -61,7 +45,7 @@ namespace Application {
 		m_SavedWindowedPosition = { 0, 0 };
 
 		int glfw_init_status = glfwInit();
-		AF_ASSERT(glfw_init_status, "GLFW failed to initialize!");
+		AF_ASSERT(glfw_init_status != 0, "glfwInit() returned 0!");
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -78,24 +62,32 @@ namespace Application {
 		m_PrimaryMonitorHandle = glfwGetPrimaryMonitor();
 		AF_ASSERT(m_PrimaryMonitorHandle != nullptr, "GLFWmonitor* (m_PrimaryMonitorHandle) is null, glfwGetPrimaryMonitor might have failed!");
 
+		// setting and logging some useful window callbacks
+
 		glfwSetWindowPosCallback(m_WindowHandle, [](GLFWwindow* window, int xpos, int ypos) {
 			WindowSpecs& window_data = *(WindowSpecs*)glfwGetWindowUserPointer(window);
 			window_data.Position = { xpos, ypos };
-			//LOG(std::format("Window Position (x, y) : {}", window_data.Position));
-			});
+	    });
 
 		glfwSetWindowSizeCallback(m_WindowHandle, [](GLFWwindow* window, int width, int height) {
 			WindowSpecs& window_data = *(WindowSpecs*)glfwGetWindowUserPointer(window);
 			window_data.Size = { width, height };
-			//LOG(std::format("Window Size (x, y) : {}", window_data.Size));
-			});
+	    });
+
+		glfwSetWindowCloseCallback(m_WindowHandle, [](GLFWwindow* window) {
+			AF_INFO("Program Elapsed Time : {0}", FrameManager::GetElapsedTime());
+	    });
+
+		glfwSetErrorCallback([](int error_code, const char* description) {
+			AF_INFO("GLFW Error ({0}): {1}", error_code, description);
+	    });
 
 		SaveWindowedSizePos();
 
 		if (m_WindowSpecs.VidMode != VideoMode::Windowed)
 			SetVideoMode(m_WindowSpecs.VidMode);
 
-		if (m_WindowSpecs.State != WindowState::Default)
+		if (m_WindowSpecs.State != WindowState::None)
 			SetWindowState(m_WindowSpecs.State);
 
 		s_Initialized = true;
@@ -128,57 +120,57 @@ namespace Application {
 		const GLFWvidmode* current_vid_mode = glfwGetVideoMode(m_PrimaryMonitorHandle);
 
 		m_OldVideoMode = m_WindowSpecs.VidMode;
-		LOG(std::format("Old Video Mode : {}", GetVideoModeString(m_OldVideoMode)));
+		AF_INFO("Old Video Mode : {0}", GetVideoModeString(m_OldVideoMode));
 
 		switch (vm) {
-		case VideoMode::Default:
-		case VideoMode::Windowed: {
-			glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_TRUE);
-			glfwSetWindowAttrib(m_WindowHandle, GLFW_RESIZABLE, GLFW_TRUE);
+			case VideoMode::Default: break;
+			case VideoMode::Windowed: {
+				glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_TRUE);
+				glfwSetWindowAttrib(m_WindowHandle, GLFW_RESIZABLE, GLFW_TRUE);
 
-			glfwSetWindowMonitor(
-				m_WindowHandle, nullptr,
-				m_SavedWindowedPosition.x, m_SavedWindowedPosition.y,
-				m_SavedWindowSize.x, m_SavedWindowSize.y, 0
-			);
+				glfwSetWindowMonitor(
+					m_WindowHandle, nullptr,
+					m_SavedWindowedPosition.x, m_SavedWindowedPosition.y,
+					m_SavedWindowSize.x, m_SavedWindowSize.y, 0
+				);
 
-			m_WindowSpecs.VidMode = vm;
-			break;
-		}
+				m_WindowSpecs.VidMode = vm;
+				break;
+			}
 
-		case VideoMode::Borderless: {
-			glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_FALSE);
-			glfwSetWindowAttrib(m_WindowHandle, GLFW_RESIZABLE, GLFW_FALSE);
+			case VideoMode::Borderless: {
+				glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_FALSE);
+				glfwSetWindowAttrib(m_WindowHandle, GLFW_RESIZABLE, GLFW_FALSE);
 
-			if (m_OldVideoMode == VideoMode::Windowed)
-				SaveWindowedSizePos();
+				if (m_OldVideoMode == VideoMode::Windowed)
+					SaveWindowedSizePos();
 
-			glfwSetWindowMonitor(
-				m_WindowHandle, nullptr,
-				0, 0,
-				current_vid_mode->width, current_vid_mode->height, 0
-			);
+				glfwSetWindowMonitor(
+					m_WindowHandle, nullptr,
+					0, 0,
+					current_vid_mode->width, current_vid_mode->height, 0
+				);
 
-			m_WindowSpecs.VidMode = vm;
-			break;
-		}
+				m_WindowSpecs.VidMode = vm;
+				break;
+			}
 
-		case VideoMode::Fullscreen: {
-			glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_FALSE);
-			glfwSetWindowAttrib(m_WindowHandle, GLFW_RESIZABLE, GLFW_FALSE);
+			case VideoMode::Fullscreen: {
+				glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_FALSE);
+				glfwSetWindowAttrib(m_WindowHandle, GLFW_RESIZABLE, GLFW_FALSE);
 
-			if (m_OldVideoMode == VideoMode::Windowed)
-				SaveWindowedSizePos();
+				if (m_OldVideoMode == VideoMode::Windowed)
+					SaveWindowedSizePos();
 
-			glfwSetWindowMonitor(
-				m_WindowHandle, m_PrimaryMonitorHandle,
-				0, 0, current_vid_mode->width, current_vid_mode->height,
-				current_vid_mode->refreshRate
-			);
+				glfwSetWindowMonitor(
+					m_WindowHandle, m_PrimaryMonitorHandle,
+					0, 0, current_vid_mode->width, current_vid_mode->height,
+					current_vid_mode->refreshRate
+				);
 
-			m_WindowSpecs.VidMode = vm;
-			break;
-		}
+				m_WindowSpecs.VidMode = vm;
+				break;
+			}
 		}
 	}
 
@@ -186,16 +178,25 @@ namespace Application {
 		if (m_WindowSpecs.State == ws && s_Initialized)
 			return;
 
-		if ((ws & WindowState::Maximized) == WindowState::Maximized)
-			glfwMaximizeWindow(m_WindowHandle);
+		switch (ws) {
+			case WindowState::None: break;
 
-		if ((ws & WindowState::Minimized) == WindowState::Minimized)
-			glfwIconifyWindow(m_WindowHandle);
+			case WindowState::Focused: {
+				glfwRestoreWindow(m_WindowHandle);
+				glfwShowWindow(m_WindowHandle);
+				glfwFocusWindow(m_WindowHandle);
+				break;
+			}
+			
+			case WindowState::Maximized: {
+				glfwMaximizeWindow(m_WindowHandle);
+				break;
+			}
 
-		if ((ws & WindowState::Focused) == WindowState::Focused) {
-			glfwRestoreWindow(m_WindowHandle);
-			glfwShowWindow(m_WindowHandle);
-			glfwFocusWindow(m_WindowHandle);
+			case WindowState::Minimized: {
+				glfwIconifyWindow(m_WindowHandle);
+				break;
+			}
 		}
 
 		m_WindowSpecs.State = ws;
@@ -207,4 +208,10 @@ namespace Application {
 		glfwSwapBuffers(m_WindowHandle);
 		glfwPollEvents();
 	}
+
+	void Window::Shutdown() {
+		glfwSetWindowShouldClose(m_WindowHandle, true);
+		m_Running = false;
+	}
+
 }

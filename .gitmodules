@@ -13,3 +13,9 @@
 [submodule "submodules/imgui"]
 	path = submodules/imgui
 	url = https://github.com/themetadevv/imgui.git
+[submodule "submodules/spdlog"]
+	path = submodules/spdlog
+	url = https://github.com/gabime/spdlog.git
+[submodule "submodules/openal-soft"]
+	path = submodules/openal-soft
+	url = https://github.com/themetadevv/OpenAL-Soft.git

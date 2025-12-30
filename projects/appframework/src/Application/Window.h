@@ -1,9 +1,11 @@
 #pragma once
 
 #include "core.h"
-#include "Maths.h"
+
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
+
+#include "Maths.h"
 
 enum class VideoMode {
 	Default = 0,
@@ -15,18 +17,11 @@ enum class VideoMode {
 AF_API std::string_view GetVideoModeString(VideoMode vm);
 
 enum class WindowState : int {
-	Default = 0,
-	Minimized = BIT(0),
-	Maximized = BIT(1),
-	Focused = BIT(2)
+	None = 0,
+	Minimized,
+	Maximized,
+	Focused
 };
-
-// <------------------ Operator Overloads ------------------>
-
-AF_API WindowState operator|(WindowState a, WindowState b);
-AF_API WindowState& operator|=(WindowState& a, WindowState b);
-AF_API WindowState operator&(WindowState a, WindowState b);
-AF_API WindowState& operator&=(WindowState& a, WindowState b);
 
 struct WindowSpecs {
 	std::string Title;
@@ -41,12 +36,12 @@ struct WindowSpecs {
 		Size = { 1600, 900 };
 		Position = { 0, 0 };
 		VidMode = VideoMode::Default;
-		State = WindowState::Default;
+		State = WindowState::None;
 		VSync = false;
 	}
 };
 
-namespace Application {
+namespace af {
 	class AF_API Window {
 	private:
 		WindowSpecs m_WindowSpecs;
@@ -87,13 +82,19 @@ namespace Application {
 		VideoMode GetCurrentVideoMode() const { return m_WindowSpecs.VidMode; }
 		WindowState GetCurrentWindowState() const { return m_WindowSpecs.State; }
 
-		void* GetNativeWindowHandle() const { return m_WindowHandle; }
+		GLFWwindow* GetNativeWindowHandle() const { return m_WindowHandle; }
+
+		bool IsVSync() { return m_WindowSpecs.VSync; }
+
+		
+
 		bool IsRunning() { return m_Running; }
 
 	public:
 		// <------------------ Functions ------------------>
 
 		void Update();
+		void Shutdown();
 	};
 }
 

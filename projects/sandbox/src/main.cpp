@@ -1,9 +1,20 @@
 
 
 #include <iostream>
+#include <format>
 
 #include "Application/Window.h"
 #include "Application/Input.h"
+#include "Application/FrameManager.h"
+#include "Application/Logger.h"
+
+const std::string client_name = "Sandbox";
+
+#define CLIENT_TRACE(...)    ::af::Logger::GetClient(client_name)->trace(__VA_ARGS__)
+#define CLIENT_INFO(...)     ::af::Logger::GetClient(client_name)->info(__VA_ARGS__)
+#define CLIENT_WARN(...)     ::af::Logger::GetClient(client_name)->warn(__VA_ARGS__)
+#define CLIENT_ERROR(...)    ::af::Logger::GetClient(client_name)->error(__VA_ARGS__)
+#define CLIENT_CRITICAL(...) ::af::Logger::GetClient(client_name)->critical(__VA_ARGS__)
 
 int main() {
 	
@@ -11,32 +22,40 @@ int main() {
 	Specs.Title = "Siuu";
 	Specs.Size = { 1600, 900 };
 	Specs.Position = { 1600 / 2, 900 / 2 };
-	Specs.State = WindowState::Default;
+	Specs.State = WindowState::Maximized;
 	Specs.VidMode = VideoMode::Windowed;
 	Specs.VSync = true;
 
-	Application::Window* window = new Application::Window(Specs);
-	Application::InputManager::Init(static_cast<GLFWwindow*>(window->GetNativeWindowHandle()));
+	af::Logger::Init();
+	af::Logger::CreateCoreLogger();
+	af::Logger::AddClient(client_name);
+
+	Scope<af::Window> window = CreateScope<af::Window>(Specs);
+	af::InputManager::Init(window->GetNativeWindowHandle());
+	af::FrameManager::Init(window.get());
 
 	while (window->IsRunning())
 	{
-		if (Application::InputManager::KeyPressed(KeyCode::F11)) {
+		if (af::InputManager::KeyPressed(KeyCode::Escape))
+			window->Shutdown();
+
+		if (af::InputManager::KeyPressed(KeyCode::F11))
 			window->SetVideoMode(VideoMode::Fullscreen);
-		}
-		
-		if (Application::InputManager::KeyPressed(KeyCode::F10)) {
+
+		if (af::InputManager::KeyPressed(KeyCode::F10))
 			window->SetVideoMode(VideoMode::Borderless);
-		}
 
-		if (Application::InputManager::KeyPressed(KeyCode::F9)) {
+		if (af::InputManager::KeyPressed(KeyCode::F9)) {
 			window->SetVideoMode(VideoMode::Windowed);
-		}
+		}	
 
+		CLIENT_INFO("Client Count : {}", af::Logger::GetClientsCount());
+
+		af::FrameManager::Update();
 		window->Update();
-		Application::InputManager::Update();
+		af::InputManager::Update();
 	}
 
-	delete window;
-
-	std::cin.get();
+	af::Logger::DeleteClient(client_name);
+	CLIENT_INFO("Client Count : {}", af::Logger::GetClientsCount());
 }

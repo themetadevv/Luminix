@@ -25,6 +25,7 @@
 #include <filesystem>
 #include <type_traits>
 #include <typeinfo>
+#include <thread>
 
 #ifdef WINDOWS
 #include <windows.h>

@@ -5,7 +5,9 @@
 appf_modules = {
     glfw = "../../submodules/glfw/include",
     glm = "../../submodules/glm",
-    imgui = "../../submodules/imgui"
+    imgui = "../../submodules/imgui",
+    spdlog = "../../submodules/spdlog/include",
+    openal_soft = "../../submodules/openal-soft/include"
 }
 
 include "../../submodules/glfw"
@@ -23,6 +25,17 @@ project "appframework"
     pchheader "afpch.h"
     pchsource "%{prj.location}/src/afpch.cpp"
 
+    defines {
+        "GLFW_INCLUDE_NONE",
+        "_CRT_SECURE_NO_WARNINGS"
+    }
+
+    postbuildcommands {
+        '{MKDIR} "../../bin"',
+        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../bin/%{cfg.buildtarget.name}"',
+        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../sandbox/bin/builds/windows/%{cfg.buildtarget.name}"',
+    }
+
     files {
         "%{prj.location}/**.lua",
         "%{prj.location}/src/**.h",
@@ -36,7 +49,9 @@ project "appframework"
         "%{prj.location}/libs",
         "%{appf_modules.glfw}",
         "%{appf_modules.glm}",
-        "%{appf_modules.imgui}"
+        "%{appf_modules.imgui}",
+        "%{appf_modules.spdlog}",
+        "%{appf_modules.openal_soft}"
     }
 
     links {
@@ -45,15 +60,15 @@ project "appframework"
         "opengl32.lib"
     }
 
-    defines {
-        "GLFW_INCLUDE_NONE"
-    }
+    filter "configurations:Debug"
+        links {
+            "../../submodules/openal-soft/binaries/openal_debug.lib"
+        }
 
-    postbuildcommands {
-        '{MKDIR} "../../bin"',
-        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../bin/%{cfg.buildtarget.name}"',
-        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../sandbox/bin/builds/windows/%{cfg.buildtarget.name}"',
-    }
+    filter "configurations:Release"
+        links {
+            "../../submodules/openal-soft/binaries/openal_release.lib"
+        }
 
     filter "system:windows" 
         defines { "WINDOWS", "BUILD_DLL" }   
@@ -68,6 +83,7 @@ project "appframework"
         runtime "Debug"
         optimize "Off"
         symbols "On"
+        buildoptions { "/utf-8"}
         defines {
             "__DEBUG__BUILD__"
         }   
@@ -76,6 +92,7 @@ project "appframework"
         runtime "Release"
         optimize "On"
         symbols "Off"
+        buildoptions { "/utf-8"}
         defines {
             "__RELEASE__BUILD__"
         }   

@@ -8,7 +8,9 @@ sandbox_modules = {
 sandbox_modules_vendor = {
     glfw = "../../submodules/glfw/include",
     glm = "../../submodules/glm",
-    imgui = "../../submodules/imgui"
+    imgui = "../../submodules/imgui",
+    spdlog = "../../submodules/spdlog/include",
+    openal_soft = "../../submodules/openal-soft/include"
 }
 
 project "sandbox"
@@ -41,11 +43,18 @@ project "sandbox"
         -- include submodules
         "%{sandbox_modules_vendor.glfw}",
         "%{sandbox_modules_vendor.glm}",
-        "%{sandbox_modules_vendor.imgui}"
+        "%{sandbox_modules_vendor.imgui}",
+        "%{sandbox_modules_vendor.spdlog}",
+        "%{sandbox_modules_vendor.openal_soft}"
     }
 
     links {
         "appframework"
+    }
+
+    defines {
+        "GLFW_INCLUDE_NONE",
+        "_CRT_SECURE_NO_WARNINGS"
     }
 
     postbuildcommands {
@@ -66,6 +75,7 @@ project "sandbox"
         runtime "Debug"
         optimize "Off"
         symbols "On"
+        buildoptions { "/utf-8"}
         defines {
             "__DEBUG__BUILD__"
         }   
@@ -74,6 +84,7 @@ project "sandbox"
         runtime "Release"
         optimize "On"
         symbols "Off"
+        buildoptions { "/utf-8"}
         defines {
             "__RELEASE__BUILD__"
         }   

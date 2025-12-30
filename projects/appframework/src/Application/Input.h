@@ -1,11 +1,11 @@
 #pragma once
 
 #include "core.h"
+
 #include "Maths.h"
 #include "InputCodes.h"
 
-#include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
+// basic input manager (doesn't recieves input when the window is not focused)
 
 enum class InputState {
 	None = 0,
@@ -13,7 +13,7 @@ enum class InputState {
 	Released
 };
 
-namespace Application {
+namespace af {
 	class AF_API InputManager {
 	private:
 		static std::unordered_map<KeyCode, InputState> m_sKeyCache;
@@ -41,5 +41,8 @@ namespace Application {
 		static bool MouseDown(MouseCode mouse_code);
 		static bool MousePressed(MouseCode mouse_code);
 		static bool MouseReleased(MouseCode mouse_code);
+
+		static TVec2<double> GetMousePosition() { return m_sMousePosition; }
+		static TVec2<double> GetMouseDeltaPosition() { return m_sDeltaMousePosition; }
 	};
 }

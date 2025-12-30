@@ -1,8 +1,13 @@
 
 #include "afpch.h"
+#include "assertion.h"
+
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+
 #include "Input.h"
 
-namespace Application {
+namespace af {
 	std::unordered_map<KeyCode, InputState> InputManager::m_sKeyCache = {};
 	std::unordered_map<MouseCode, InputState> InputManager::m_sMouseButtonCache = {};
 
@@ -24,7 +29,7 @@ namespace Application {
 	void InputManager::Init(void* window_handle) {
 		AF_ASSERT(window_handle != nullptr, "Input::Init called with null window_handle*");
 
-		// setting input state for all keys/buttons to InputState::None
+		// setting default input state for all keys/buttons to InputState::None
 		for (int key = 0; key <= GLFW_KEY_LAST; key++)
 			m_sKeyCache[static_cast<KeyCode>(key)] = InputState::None;
 
@@ -34,32 +39,26 @@ namespace Application {
 		glfwSetKeyCallback(static_cast<GLFWwindow*>(window_handle), [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 			if (action == InputStateToGLFWBase(InputState::Pressed)) {
 				m_sKeyCache[static_cast<KeyCode>(key)] = InputState::Pressed;
-				//LOG(std::format("Key[{}] Pressed!", GetKeyCodeString(static_cast<KeyCode>(key))));
 			}
 
 			if (action == InputStateToGLFWBase(InputState::Released)) {
 				m_sKeyCache[static_cast<KeyCode>(key)] = InputState::Released;
-				//LOG(std::format("Key[{}] Released!", GetKeyCodeString(static_cast<KeyCode>(key))));
 			}
 	    });
 
 		glfwSetMouseButtonCallback(static_cast<GLFWwindow*>(window_handle), [](GLFWwindow* window, int button, int action, int mods) {
 			if (action == InputStateToGLFWBase(InputState::Pressed)) {
 				m_sMouseButtonCache[static_cast<MouseCode>(button)] = InputState::Pressed;
-				//LOG(std::format("MouseButton[{}] Pressed!", GetMouseCodeString(static_cast<MouseCode>(button))));
 			}
 
 			if (action == InputStateToGLFWBase(InputState::Released)) {
 				m_sMouseButtonCache[static_cast<MouseCode>(button)] = InputState::Released;
-				//LOG(std::format("MouseButton[{}] Released!", GetMouseCodeString(static_cast<MouseCode>(button))));
 			}
 	    });
 
 		glfwSetCursorPosCallback(static_cast<GLFWwindow*>(window_handle), [](GLFWwindow* window, double xpos, double ypos) {
 			m_sMousePosition.x = xpos;
 			m_sMousePosition.y = ypos;
-
-			//LOG(std::format("CursorPositon(X, Y) : {}, {}", m_sMousePosition.x, m_sMousePosition.y));
 	    });
 	}
 
