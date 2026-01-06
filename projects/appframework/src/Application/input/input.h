@@ -22,9 +22,9 @@ namespace af {
 		static std::unordered_map<KeyCode, InputState> m_sLastKeyCache; // stores key pressed/released in the last frame
 		static std::unordered_map<MouseCode, InputState> m_sLastMouseButtonCache; // stores mouse button pressed/released in the last frame
 
-		static TVec2<double> m_sMousePosition;
-		static TVec2<double> m_sLastMousePosition;
-		static TVec2<double> m_sDeltaMousePosition;
+		static Vec2<double> m_sMousePosition;
+		static Vec2<double> m_sLastMousePosition;
+		static Vec2<double> m_sDeltaMousePosition;
 
 	public:
 		static void Init(void* window_handle);
@@ -42,7 +42,7 @@ namespace af {
 		static bool MousePressed(MouseCode mouse_code);
 		static bool MouseReleased(MouseCode mouse_code);
 
-		static TVec2<double> GetMousePosition() { return m_sMousePosition; }
-		static TVec2<double> GetMouseDeltaPosition() { return m_sDeltaMousePosition; }
+		static Vec2<double> GetMousePosition() { return m_sMousePosition; }
+		static Vec2<double> GetMouseDeltaPosition() { return m_sDeltaMousePosition; }
 	};
 }

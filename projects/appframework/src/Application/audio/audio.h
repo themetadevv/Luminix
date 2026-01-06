@@ -16,18 +16,28 @@ namespace af {
 		Audio(ALuint audio_buffer_id, ALuint audio_src_id);
 
 	public:
+		Audio(const Audio&) = delete;
+		Audio& operator=(const Audio&) = delete;
+
+		Audio(Audio&& other) noexcept;
+		Audio& operator=(Audio&& other) noexcept;
+
 		Audio() : m_AudioBufferID(0), m_AudioSourceID(0) {}
 		~Audio();
 
 		static Audio LoadAudio(std::string_view sound_path);
 
-		void DestroyAudio(ALCcontext* device);
-
-		void SetSrc();
+		void Destroy();
+		void SetPitch(float pitch = 1.0f);
+		void SetGain(float gain = 1.0f);
+		void SetLooping(bool loop = false);
+		void SetPosition(const Vec3<float>& position = { 0.0f, 0.0f, 0.0f });
+		void SetVelocity(const Vec3<float>& velocity = { 0.0f, 0.0f, 0.0f });	
 		void Play();
 
 	private:
 		static Audio LoadAudioDataFromWaveFile(std::string_view sound_path);
+		static Audio LoadAudioDataFromMp3File(std::string_view sound_path);
 	};
 }
  

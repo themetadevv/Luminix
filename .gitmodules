@@ -22,3 +22,6 @@
 [submodule "submodules/audiofile"]
 	path = submodules/audiofile
 	url = https://github.com/adamstark/AudioFile
+[submodule "submodules/minimp3"]
+	path = submodules/minimp3
+	url = https://github.com/lieff/minimp3.git

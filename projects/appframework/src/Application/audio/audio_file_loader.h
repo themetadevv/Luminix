@@ -1,7 +1,7 @@
 #pragma once
 
-namespace af {
-	struct WaveHeader {
+namespace af::AudioLoader {
+	struct WAVE_AUDIO {
 		// RIFF
 		char chunk_id[4];              //  4  riff_mark[4];
 		uint32_t chunk_size;           //  4  file_size;
@@ -22,8 +22,15 @@ namespace af {
 		uint32_t sub_chunk2_size;      //  4  sound_size;
 	};
 
-	class AudioLoader {
-	public:
-		static bool LoadWave(std::string_view audio_path, WaveHeader* wave_header_data, std::vector<char>& raw_pcm_bytes);
+	struct MP3_AUDIO {
+		int16_t* buffer;
+		size_t samples;
+		int num_channels; 
+		int sample_rate; 
+		int layer; 
+		int avg_bitrate_kbps;
 	};
+
+	bool LoadWave(std::string_view audio_path, WAVE_AUDIO* wave_audio_header, std::vector<char>& pcm);
+	bool LoadMP3(std::string_view audio_path, MP3_AUDIO* mp3_file_info, int& pcm_size);
 }

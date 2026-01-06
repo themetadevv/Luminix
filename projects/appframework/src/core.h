@@ -10,10 +10,13 @@
 #endif
 
 #define ENABLE_LOGGING
+#define BUILD_IMGUI
+#define BUILD_WITH_CONSOLE
 
 #if defined(__DEBUG__BUILD__)
+#if defined(BUILD_DLL)
 	#define ENABLE_ASSERTION
-
+#endif
 	#define SOUND_LIB_DEBUGGER
 #endif
 

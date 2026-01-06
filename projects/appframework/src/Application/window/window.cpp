@@ -8,29 +8,29 @@
 
 std::string_view GetVideoModeString(VideoMode vm) {
 	switch (vm) {
-		case VideoMode::Default: {
-			return "Default";
-			break;
-		}
+	case VideoMode::Default: {
+		return "Default";
+		break;
+	}
 
-		case VideoMode::Windowed: {
-			return "Windowed";
-			break;
-		}
+	case VideoMode::Windowed: {
+		return "Windowed";
+		break;
+	}
 
-		case VideoMode::Borderless: {
-			return "Borderless";
-			break;
-		}
+	case VideoMode::Borderless: {
+		return "Borderless";
+		break;
+	}
 
-		case VideoMode::Fullscreen: {
-			return "Fullscreen";
-			break;
-		}
+	case VideoMode::Fullscreen: {
+		return "Fullscreen";
+		break;
+	}
 	}
 }
 
-namespace af {
+namespace af::window {
 	static bool s_Initialized = false;
 
 	void Window::SaveWindowedSizePos() {
@@ -51,6 +51,9 @@ namespace af {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+
+		if (m_WindowSpecs.CustomHeader)
+			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 
 		m_WindowHandle = glfwCreateWindow(m_WindowSpecs.Size.x, m_WindowSpecs.Size.y, m_WindowSpecs.Title.c_str(), nullptr, nullptr);
 		AF_ASSERT(m_WindowHandle != nullptr, "GLFWwindow* is null, glfwCreateWindow might have failed!");
@@ -87,7 +90,7 @@ namespace af {
 		if (m_WindowSpecs.VidMode != VideoMode::Windowed)
 			SetVideoMode(m_WindowSpecs.VidMode);
 
-		if (m_WindowSpecs.State != WindowState::None)
+		if (m_WindowSpecs.State != WindowState::Default)
 			SetWindowState(m_WindowSpecs.State);
 
 		s_Initialized = true;
@@ -98,12 +101,12 @@ namespace af {
 		glfwTerminate();
 	}
 
-	void Window::SetWindowSize(const TVec2<int>& size) {
+	void Window::SetWindowSize(const Vec2<int>& size) {
 		m_WindowSpecs.Size = size;
 		glfwSetWindowSize(m_WindowHandle, m_WindowSpecs.Size.x, m_WindowSpecs.Size.y);
 	}
 
-	void Window::SetWindowPosition(const TVec2<int>& pos) {
+	void Window::SetWindowPosition(const Vec2<int>& pos) {
 		m_WindowSpecs.Position = pos;
 		glfwSetWindowPos(m_WindowHandle, m_WindowSpecs.Position.x, m_WindowSpecs.Position.y);
 	}
@@ -125,7 +128,10 @@ namespace af {
 		switch (vm) {
 			case VideoMode::Default: break;
 			case VideoMode::Windowed: {
-				glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_TRUE);
+				
+				if(!m_WindowSpecs.CustomHeader)
+					glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_TRUE);
+
 				glfwSetWindowAttrib(m_WindowHandle, GLFW_RESIZABLE, GLFW_TRUE);
 
 				glfwSetWindowMonitor(
@@ -139,7 +145,9 @@ namespace af {
 			}
 
 			case VideoMode::Borderless: {
-				glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_FALSE);
+				if (!m_WindowSpecs.CustomHeader)
+					glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_FALSE);
+
 				glfwSetWindowAttrib(m_WindowHandle, GLFW_RESIZABLE, GLFW_FALSE);
 
 				if (m_OldVideoMode == VideoMode::Windowed)
@@ -156,7 +164,9 @@ namespace af {
 			}
 
 			case VideoMode::Fullscreen: {
-				glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_FALSE);
+				if (!m_WindowSpecs.CustomHeader)
+					glfwSetWindowAttrib(m_WindowHandle, GLFW_DECORATED, GLFW_FALSE);
+
 				glfwSetWindowAttrib(m_WindowHandle, GLFW_RESIZABLE, GLFW_FALSE);
 
 				if (m_OldVideoMode == VideoMode::Windowed)
@@ -179,7 +189,7 @@ namespace af {
 			return;
 
 		switch (ws) {
-			case WindowState::None: break;
+			case WindowState::Default: break;
 
 			case WindowState::Focused: {
 				glfwRestoreWindow(m_WindowHandle);

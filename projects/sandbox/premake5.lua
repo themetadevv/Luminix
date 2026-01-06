@@ -11,7 +11,8 @@ sandbox_modules_vendor = {
     imgui = "../../submodules/imgui",
     spdlog = "../../submodules/spdlog/include",
     openal_soft = "../../submodules/openal-soft/include",
-    audiofile_adamstark = "../../submodules/audiofile"
+    audiofile_adamstark = "../../submodules/audiofile",
+    minimp3 = "../../submodules/minimp3"
 }
 
 project "sandbox"
@@ -47,11 +48,13 @@ project "sandbox"
         "%{sandbox_modules_vendor.imgui}",
         "%{sandbox_modules_vendor.spdlog}",
         "%{sandbox_modules_vendor.openal_soft}",
-        "%{sandbox_modules_vendor.audiofile_adamstark}"
+        "%{sandbox_modules_vendor.audiofile_adamstark}",
+        "%{sandbox_modules_vendor.minimp3}"
     }
 
     links {
-        "appframework"
+        "appframework",
+        "imgui"
     }
 
     defines {

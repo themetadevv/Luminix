@@ -30,7 +30,7 @@ bool al_error(const char* conditon_name, const char* file, uint32_t line) {
 
 		AF_WARN("| Condition : {}", conditon_name);
 		AF_WARN("| Location : {}::{}", file, line);
-		AF_ERROR("| Message : {}", get_al_error_enum_readable(alGetError()));
+		AF_ERROR("| Message : {}", get_al_error_enum_readable(error_code));
 
 		AF_WARN("<--------------------------------------------------->");
 

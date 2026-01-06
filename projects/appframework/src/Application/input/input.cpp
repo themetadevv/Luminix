@@ -14,9 +14,9 @@ namespace af {
 	std::unordered_map<KeyCode, InputState> InputManager::m_sLastKeyCache = {};
 	std::unordered_map<MouseCode, InputState> InputManager::m_sLastMouseButtonCache = {};
 
-	TVec2<double> InputManager::m_sMousePosition = { 0.0, 0.0 };
-	TVec2<double> InputManager::m_sLastMousePosition = { 0.0, 0.0 };
-	TVec2<double> InputManager::m_sDeltaMousePosition = { 0.0, 0.0 };
+	Vec2<double> InputManager::m_sMousePosition = { 0.0, 0.0 };
+	Vec2<double> InputManager::m_sLastMousePosition = { 0.0, 0.0 };
+	Vec2<double> InputManager::m_sDeltaMousePosition = { 0.0, 0.0 };
 
 	static int InputStateToGLFWBase(InputState is) {
 		switch (is) {

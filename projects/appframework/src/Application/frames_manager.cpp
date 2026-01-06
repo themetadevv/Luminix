@@ -15,9 +15,9 @@ namespace af {
 	uint32_t FrameManager::m_sFrameCount = 0;
 	uint32_t FrameManager::m_sTotalFrames = 0;
 
-	Window* FrameManager::m_Window = nullptr;
+	af::window::Window* FrameManager::m_Window = nullptr;
 
-	void FrameManager::Init(Window* window) {
+	void FrameManager::Init(af::window::Window* window) {
 		m_Window = window;
 		m_sStartFrameTime = glfwGetTime();
 		AF_ASSERT(m_sStartFrameTime != 0.0, "glfwGetTime failed! did you create GLFWwindow context first?");

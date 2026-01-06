@@ -22,6 +22,7 @@
         } \
     } while (0)
 #else
+#if defined(BUILD_WITH_CONSOLE)
 #define AF_ASSERT(X, ...) \
     do { \
         if (!(X)) { \
@@ -35,9 +36,9 @@
                 util::get_file_name_from_path(__FILE__), \
                 __LINE__ \
             ); \
-            DEBUG_BREAK(); \
         } \
     } while (0)
+#endif
 #endif
 
 

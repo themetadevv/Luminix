@@ -14,34 +14,26 @@ enum class VideoMode {
 	Fullscreen
 };
 
-AF_API std::string_view GetVideoModeString(VideoMode vm);
+std::string_view GetVideoModeString(VideoMode vm);
 
-enum class WindowState : int {
-	None = 0,
+enum class WindowState {
+	Default = 0,
 	Minimized,
 	Maximized,
 	Focused
 };
 
 struct WindowSpecs {
-	std::string Title;
-	TVec2<int> Size;
-	TVec2<int> Position;
-	VideoMode VidMode;
-	WindowState State;
-	bool VSync;
-
-	WindowSpecs() {
-		Title = "OpenGL : 4.6";
-		Size = { 1600, 900 };
-		Position = { 0, 0 };
-		VidMode = VideoMode::Default;
-		State = WindowState::None;
-		VSync = false;
-	}
+	std::string Title = "GLFW Context Version : 4.6";
+	Vec2<int> Size = { 0, 0 };
+	Vec2<int> Position = { 0, 0 };
+	VideoMode VidMode = VideoMode::Default;
+	WindowState State = WindowState::Default;
+	bool VSync = false;
+	bool CustomHeader = false;
 };
 
-namespace af {
+namespace af::window {
 	class AF_API Window {
 	private:
 		WindowSpecs m_WindowSpecs;
@@ -49,8 +41,8 @@ namespace af {
 		GLFWmonitor* m_PrimaryMonitorHandle;
 
 		VideoMode  m_OldVideoMode;
-		TVec2<int> m_SavedWindowSize;
-		TVec2<int> m_SavedWindowedPosition;
+		Vec2<int> m_SavedWindowSize;
+		Vec2<int> m_SavedWindowedPosition;
 
 		bool m_Running;
 
@@ -64,8 +56,8 @@ namespace af {
 	public:
 		// <------------------ Setters ------------------>
 
-		void SetWindowSize(const TVec2<int>& size);
-		void SetWindowPosition(const TVec2<int>& pos);
+		void SetWindowSize(const Vec2<int>& size);
+		void SetWindowPosition(const Vec2<int>& pos);
 		void SetVSync(bool val);
 
 		void SetVideoMode(VideoMode vm);
@@ -76,8 +68,8 @@ namespace af {
 
 		std::string_view GetWindowTitle() const { return m_WindowSpecs.Title; }
 
-		TVec2<int> GetWindowSize() const { return m_WindowSpecs.Size; }
-		TVec2<int> GetWindowPosition() const { return m_WindowSpecs.Position; }
+		Vec2<int> GetWindowSize() const { return m_WindowSpecs.Size; }
+		Vec2<int> GetWindowPosition() const { return m_WindowSpecs.Position; }
 
 		VideoMode GetCurrentVideoMode() const { return m_WindowSpecs.VidMode; }
 		WindowState GetCurrentWindowState() const { return m_WindowSpecs.State; }
@@ -85,9 +77,6 @@ namespace af {
 		GLFWwindow* GetNativeWindowHandle() const { return m_WindowHandle; }
 
 		bool IsVSync() { return m_WindowSpecs.VSync; }
-
-		
-
 		bool IsRunning() { return m_Running; }
 
 	public:

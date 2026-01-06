@@ -19,10 +19,10 @@ namespace af {
 		static uint32_t m_sFrameCount;
 		static uint32_t m_sTotalFrames;
 
-		static Window* m_Window;
+		static af::window::Window* m_Window;
 
 	public:
-		static void Init(Window* window);
+		static void Init(af::window::Window* window);
 		static void SetTargetFrames(uint32_t frames);
 		static void Update();
 

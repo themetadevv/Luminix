@@ -8,7 +8,8 @@ appf_modules = {
     imgui = "../../submodules/imgui",
     spdlog = "../../submodules/spdlog/include",
     openal_soft = "../../submodules/openal-soft/include",
-    audiofile_adamstark = "../../submodules/audiofile"
+    audiofile_adamstark = "../../submodules/audiofile",
+    minimp3 = "../../submodules/minimp3"
 }
 
 include "../../submodules/glfw"
@@ -53,7 +54,8 @@ project "appframework"
         "%{appf_modules.imgui}", -- compile
         "%{appf_modules.spdlog}", -- header-only
         "%{appf_modules.openal_soft}", -- compile/header-only
-        "%{appf_modules.audiofile_adamstark}" -- single-header-compile
+        "%{appf_modules.audiofile_adamstark}", -- single-header-compile
+        "%{appf_modules.minimp3}" -- single-header-compile
     }
 
     links {
