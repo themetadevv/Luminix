@@ -86,6 +86,10 @@ namespace Luminix {
 		return ImGui::SliderFloat(label, v, min_v, max_v, format, GetSliderFlags_ImGuiBackend(flags));
 	}
 
+	bool ComboBox(const char* label, int* current_slot, const char* items) {
+		return ImGui::Combo(label, current_slot, items);
+	}
+
 	//struct WindowDrag {
 	//	bool dragging = false;
 	//	Vec2<int> window_position = { 0, 0 };

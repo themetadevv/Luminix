@@ -11,7 +11,7 @@
 
 #define LX_ENABLE_LOGGING
 #define LX_BUILD_LIB
-#define LX_NO_CONSOLE
+#define LX_CONSOLE TRUE
 
 #if defined(LX_DEBUG_BUILD)
 #define LX_ENABLE_ASSERTION

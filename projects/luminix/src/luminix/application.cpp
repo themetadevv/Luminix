@@ -1,6 +1,5 @@
 
 #include "lxpch.h"
-#include "logger/logger.h"
 #include "application.h"
 
 namespace Luminix {
@@ -10,11 +9,15 @@ namespace Luminix {
 	{
 		m_WindowSetting.Title = app_setting.AppName;
 		m_WindowSetting.Size = { 1600, 900 };
+		m_WindowSetting.State = app_setting.AppState;
+		m_WindowSetting.VidMode = app_setting.AppMode;
 		m_WindowSetting.VSync = app_setting.AppVSync;
 		m_WindowSetting.CustomHeader = app_setting.AppHeader;
 
 		m_sApplication = this;
 		m_Window = CreateScope<Window>(m_WindowSetting);
+		m_AudioDevice = CreateScope<AudioDevice>(nullptr); // nullptr = default sound device
+
 		Time::Init();
 		Input::Init(static_cast<GLFWwindow*>(m_Window->GetNativeWindowHandle()));
 

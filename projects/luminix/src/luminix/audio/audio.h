@@ -27,7 +27,7 @@ namespace Luminix {
 		~Audio();
 
 		static Audio LoadAudio(std::string_view audio_name, std::string_view sound_path);
-		std::string_view GetAudioName() { return m_AudioName; }
+		std::string_view GetAudioName() const { return m_AudioName; }
 
 		void Destroy();
 		void SetPitch(float pitch = 1.0f);

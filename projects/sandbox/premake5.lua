@@ -3,9 +3,12 @@
 -- must include all submodules used by luminix
 
 sandbox_modules = {
-    luminix_src = "../../projects/luminix/src",
-    luminix_libs = "../../projects/luminix/libs",
+    core = "../../projects/core/src",
+    luminix = "../../projects/luminix/src",
+    lxgl = "../../projects/lxgl/src",
+
     glfw = "../../submodules/glfw/include",
+    glad = "../../submodules/glad/include",
     glm = "../../submodules/glm",
     imgui = "../../submodules/imgui",
     spdlog = "../../submodules/spdlog/include",
@@ -27,22 +30,21 @@ project "sandbox"
     files {
         "%{prj.location}/**.lua",
         "%{prj.location}/src/**.h",
-        "%{prj.location}/src/**.cpp",
-        "%{prj.location}/libs/**.h", 
-        "%{prj.location}/libs/**.cpp",
+        "%{prj.location}/src/**.cpp"
     }
 
     includedirs {
         -- including this project's files
         "%{prj.location}/src",
-        "%{prj.location}/libs",
 
         -- including luminix framework files
-        "%{sandbox_modules.luminix_src}",
-        "%{sandbox_modules.luminix_libs}",
+        "%{sandbox_modules.core}",
+        "%{sandbox_modules.luminix}",
+        "%{sandbox_modules.lxgl}",
 
         -- include luminix's submodules
         "%{sandbox_modules.glfw}",
+        "%{sandbox_modules.glad}",
         "%{sandbox_modules.glm}",
         "%{sandbox_modules.imgui}",
         "%{sandbox_modules.spdlog}",
@@ -53,7 +55,7 @@ project "sandbox"
 
     links {
         "luminix",
-        "imgui"
+        "core"
     }
 
     defines {

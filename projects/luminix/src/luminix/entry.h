@@ -1,14 +1,17 @@
 #pragma once
 
-#include "application.h"
+// must be included in one src file
+
+#include "core/logger.h"
+#include "luminix/application.h"
 
 #if defined(LX_APP_PLATFORM_WINDOWS)
 
 extern Luminix::Application* CreateApplication();
 
 int main() {
-	Luminix::Logger::Init();
-	Luminix::Logger::CreateCoreLogger();
+	Core::Logger::Init();
+	Core::Logger::AddLogger("Luminix");
 
 	Luminix::Application* app = CreateApplication();
 	app->Run();

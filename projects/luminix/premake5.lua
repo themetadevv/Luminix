@@ -3,7 +3,9 @@
 -- Luminix
 
 luminix_modules = {
+    core = "../../projects/core/src",
     glfw = "../../submodules/glfw/include",
+    glad = "../../submodules/glad/include",
     glm = "../../submodules/glm",
     imgui = "../../submodules/imgui",
     spdlog = "../../submodules/spdlog/include",
@@ -49,7 +51,9 @@ project "luminix"
     includedirs {
         "%{prj.location}/src",
         "%{prj.location}/libs",
+        "%{luminix_modules.core}", -- compile
         "%{luminix_modules.glfw}", -- compile
+        "%{luminix_modules.glad}", -- compile
         "%{luminix_modules.glm}", -- header-only
         "%{luminix_modules.imgui}", -- compile
         "%{luminix_modules.spdlog}", -- header-only
@@ -59,9 +63,10 @@ project "luminix"
     }
 
     links {
+        "core",
         "glfw",
         "imgui",
-        "opengl32.lib"
+        --"lxgl",
     }
 
     filter "configurations:Debug"

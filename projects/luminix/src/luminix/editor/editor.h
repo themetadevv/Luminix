@@ -35,5 +35,7 @@ namespace Luminix {
 		SliderFlags flags = SliderFlags::SliderFlags_None
 	);
 
+	LX_API bool ComboBox(const char* label, int* slot, const char* items);
+
 	// AF_API void Header(af::window::Window* window, const char* title, float height, const Color& color = Color(45.0f));
 }

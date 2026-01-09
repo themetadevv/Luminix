@@ -4,7 +4,7 @@
 #include "assertion.h"
 #include "audio_debug.h"
 
-#if defined(SOUND_LIB_DEBUGGER)
+#if defined(LX_SOUND_DEBUGGER)
 
 // AL_DEBUGGER
 
@@ -26,13 +26,13 @@ const char* get_al_error_enum_readable(ALenum error_code) {
 
 bool al_error(const char* conditon_name, const char* file, uint32_t line) {
 	while (ALenum error_code = alGetError()) {
-		AF_WARN("<----------------------------- AL_DEBUG ----------------------------->");
+		LX_WARN("<----------------------------- AL_DEBUG ----------------------------->");
 
-		AF_WARN("| Condition : {}", conditon_name);
-		AF_WARN("| Location : {}::{}", file, line);
-		AF_ERROR("| Message : {}", get_al_error_enum_readable(error_code));
+		LX_WARN("| Condition : {}", conditon_name);
+		LX_WARN("| Location : {}::{}", file, line);
+		LX_ERROR("| Message : {}", get_al_error_enum_readable(error_code));
 
-		AF_WARN("<--------------------------------------------------->");
+		LX_WARN("<--------------------------------------------------->");
 
 		return true;
 	}
@@ -61,13 +61,13 @@ const char* get_alc_error_enum_readable(ALCenum error_code) {
 
 bool alc_error(ALCdevice* device, const char* conditon_name, const char* file, uint32_t line) {
 	while (ALCenum error_code = alcGetError(device)) {
-		AF_WARN("<----------------------------- ALC_DEBUG ----------------------------->");
-
-		AF_WARN("| Condition : {}", conditon_name);
-		AF_WARN("| Location : {}::{}", file, line);
-		AF_ERROR("| Message : {}", get_alc_error_enum_readable(error_code));
-
-		AF_WARN("<--------------------------------------------------->");
+		LX_WARN("<----------------------------- ALC_DEBUG ----------------------------->");
+		
+		LX_WARN("| Condition : {}", conditon_name);
+		LX_WARN("| Location : {}::{}", file, line);
+		LX_ERROR("| Message : {}", get_alc_error_enum_readable(error_code));
+		
+		LX_WARN("<--------------------------------------------------->");
 
 		return true;
 	}
