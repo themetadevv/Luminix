@@ -1,11 +1,10 @@
 
-sandbox_modules = {
-    appframework_src = "../../projects/appframework/src",
-    appframework_libs = "../../projects/appframework/libs",
-}
+-- Luminix App Template
+-- must include all submodules used by luminix
 
--- must include vendors used by sandbox's modules
-sandbox_modules_vendor = {
+sandbox_modules = {
+    luminix_src = "../../projects/luminix/src",
+    luminix_libs = "../../projects/luminix/libs",
     glfw = "../../submodules/glfw/include",
     glm = "../../submodules/glm",
     imgui = "../../submodules/imgui",
@@ -38,22 +37,22 @@ project "sandbox"
         "%{prj.location}/src",
         "%{prj.location}/libs",
 
-        -- including sandbox's modules files
-        "%{sandbox_modules.appframework_src}",
-        "%{sandbox_modules.appframework_libs}",
+        -- including luminix framework files
+        "%{sandbox_modules.luminix_src}",
+        "%{sandbox_modules.luminix_libs}",
 
-        -- include submodules
-        "%{sandbox_modules_vendor.glfw}",
-        "%{sandbox_modules_vendor.glm}",
-        "%{sandbox_modules_vendor.imgui}",
-        "%{sandbox_modules_vendor.spdlog}",
-        "%{sandbox_modules_vendor.openal_soft}",
-        "%{sandbox_modules_vendor.audiofile_adamstark}",
-        "%{sandbox_modules_vendor.minimp3}"
+        -- include luminix's submodules
+        "%{sandbox_modules.glfw}",
+        "%{sandbox_modules.glm}",
+        "%{sandbox_modules.imgui}",
+        "%{sandbox_modules.spdlog}",
+        "%{sandbox_modules.openal_soft}",
+        "%{sandbox_modules.audiofile_adamstark}",
+        "%{sandbox_modules.minimp3}"
     }
 
     links {
-        "appframework",
+        "luminix",
         "imgui"
     }
 
@@ -68,13 +67,13 @@ project "sandbox"
     }
 
     filter "system:windows" 
-        defines { "WINDOWS" }   
+        defines { "LX_APP_PLATFORM_WINDOWS" }   
 
     filter "system:linux"
-        defines { "LINUX" }
+        defines { "LX_APP_PLATFORM_LINUX" }
 
     filter "system:macosx"
-        defines { "MACOSX" }
+        defines { "LX_APP_PLATFORM_MACOSX" }
 
     filter "configurations:Debug"
         runtime "Debug"
@@ -82,7 +81,7 @@ project "sandbox"
         symbols "On"
         buildoptions { "/utf-8"}
         defines {
-            "__DEBUG__BUILD__"
+            "LX_APP_DEBUG_BUILD"
         }   
 
     filter "configurations:Release"
@@ -91,5 +90,5 @@ project "sandbox"
         symbols "Off"
         buildoptions { "/utf-8"}
         defines {
-            "__RELEASE__BUILD__"
+            "LX_APP_RELEASE_BUILD"
         }   

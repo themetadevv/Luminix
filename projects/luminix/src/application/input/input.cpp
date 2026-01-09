@@ -1,0 +1,103 @@
+
+#include "lxpch.h"
+#include "assertion.h"
+
+#include <GLFW/glfw3.h>
+#include <GLFW/glfw3native.h>
+
+#include "Input.h"
+
+namespace Luminix {
+	std::unordered_map<KeyCode, InputState> Input::m_sKeyCache = {};
+	std::unordered_map<MouseCode, InputState> Input::m_sMouseButtonCache = {};
+
+	std::unordered_map<KeyCode, InputState> Input::m_sLastKeyCache = {};
+	std::unordered_map<MouseCode, InputState> Input::m_sLastMouseButtonCache = {};
+
+	Vec2<double> Input::m_sMousePosition = { 0.0, 0.0 };
+	Vec2<double> Input::m_sLastMousePosition = { 0.0, 0.0 };
+	Vec2<double> Input::m_sDeltaMousePosition = { 0.0, 0.0 };
+
+	static int InputStateToGLFWBase(InputState is) {
+		switch (is) {
+		case InputState::None: return NULL; break;
+		case InputState::Pressed: return GLFW_PRESS; break;
+		case InputState::Released: return GLFW_RELEASE; break;
+		}
+	}
+
+	void Input::Init(void* window_handle) {
+		LX_ASSERT(window_handle != nullptr, "Input::Init called with null window_handle*");
+
+		// setting default input state for all keys/buttons to InputState::None
+		for (int key = 0; key <= GLFW_KEY_LAST; key++)
+			m_sKeyCache[static_cast<KeyCode>(key)] = InputState::None;
+
+		for (int button = 0; button <= GLFW_MOUSE_BUTTON_LAST; button++)
+			m_sMouseButtonCache[static_cast<MouseCode>(button)] = InputState::None;
+
+		glfwSetKeyCallback(static_cast<GLFWwindow*>(window_handle), [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+			if (action == InputStateToGLFWBase(InputState::Pressed)) {
+				m_sKeyCache[static_cast<KeyCode>(key)] = InputState::Pressed;
+			}
+
+			if (action == InputStateToGLFWBase(InputState::Released)) {
+				m_sKeyCache[static_cast<KeyCode>(key)] = InputState::Released;
+			}
+	    });
+
+		glfwSetMouseButtonCallback(static_cast<GLFWwindow*>(window_handle), [](GLFWwindow* window, int button, int action, int mods) {
+			if (action == InputStateToGLFWBase(InputState::Pressed)) {
+				m_sMouseButtonCache[static_cast<MouseCode>(button)] = InputState::Pressed;
+			}
+
+			if (action == InputStateToGLFWBase(InputState::Released)) {
+				m_sMouseButtonCache[static_cast<MouseCode>(button)] = InputState::Released;
+			}
+	    });
+
+		glfwSetCursorPosCallback(static_cast<GLFWwindow*>(window_handle), [](GLFWwindow* window, double xpos, double ypos) {
+			m_sMousePosition.x = xpos;
+			m_sMousePosition.y = ypos;
+	    });
+	}
+
+	void Input::Update() {
+		m_sDeltaMousePosition = m_sMousePosition - m_sLastMousePosition;
+		m_sLastMousePosition = m_sMousePosition;
+
+		for (auto& [keycode, inputstate] : m_sKeyCache)
+			m_sLastKeyCache[keycode] = inputstate;
+
+		for (auto& [mousecode, inputstate] : m_sMouseButtonCache)
+			m_sLastMouseButtonCache[mousecode] = inputstate;
+	}
+
+	// <--------------------- KEYBOARD ---------------------->
+
+	bool Input::KeyDown(KeyCode key_code) {
+		return m_sKeyCache[key_code] == InputState::Pressed;
+	}
+
+	bool Input::KeyPressed(KeyCode key_code) {
+		return m_sKeyCache[key_code] == InputState::Pressed && m_sLastKeyCache[key_code] != InputState::Pressed;
+	}
+
+	bool Input::KeyReleased(KeyCode key_code) {
+		return m_sKeyCache[key_code] == InputState::Released;
+	}
+
+	// <--------------------- MOUSE ---------------------->
+
+	bool Input::MouseDown(MouseCode mouse_code) {
+		return m_sMouseButtonCache[mouse_code] == InputState::Pressed;
+	}
+
+	bool Input::MousePressed(MouseCode mouse_code) {
+		return m_sMouseButtonCache[mouse_code] == InputState::Pressed && m_sLastMouseButtonCache[mouse_code] != InputState::Pressed;
+	}
+
+	bool Input::MouseReleased(MouseCode mouse_code) {
+		return m_sMouseButtonCache[mouse_code] == InputState::Released;
+	}
+}

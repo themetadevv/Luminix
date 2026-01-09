@@ -3,5 +3,5 @@ workspace "Base"
     configurations {"Debug", "Release"}
     startproject "sandbox"
 
-include "projects/appframework"
+include "projects/luminix"
 include "projects/sandbox"
