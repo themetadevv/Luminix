@@ -1,7 +1,6 @@
 #pragma once
 
-#include "core.h"
-#include "utils.h"
+#include "lxcore.h"
 #include "core/file_system.h"
 
 #define AL_LIBTYPE_STATIC // must define this before including the audio library (openal), or else face the linking errors

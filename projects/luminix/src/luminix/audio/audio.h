@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core.h"
+#include "lxcore.h"
 #include "maths.h"
 
 #include "AL/al.h"

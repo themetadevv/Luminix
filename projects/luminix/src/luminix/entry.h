@@ -12,6 +12,7 @@ extern Luminix::Application* CreateApplication();
 int main() {
 	Core::Logger::Init();
 	Core::Logger::AddLogger("Luminix");
+	Core::Logger::AddLogger("LXGL");
 
 	Luminix::Application* app = CreateApplication();
 	app->Run();

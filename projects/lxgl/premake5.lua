@@ -3,6 +3,7 @@
 -- Luminix OpenGL
 
 lxgl_modules = {
+    core = "../../projects/core/src",
     glad = "../../submodules/glad/include",
     glm = "../../submodules/glm",
     spdlog = "../../submodules/spdlog/include"
@@ -16,20 +17,16 @@ project "lxgl"
     cppdialect "C++20"
     systemversion "latest"
 
-    targetdir ("bin/builds/%{cfg.system}")
-    objdir ("bin/intermediates/%{cfg.system}")
+    targetdir ("bin/builds/%{cfg.system}/%{cfg.buildcfg}")
+    objdir ("bin/intermediates/%{cfg.system}/%{cfg.buildcfg}")
 
     pchheader "lxglpch.h"
     pchsource "%{prj.location}/src/lxglpch.cpp"
 
-    defines {
-        "_CRT_SECURE_NO_WARNINGS"
-    }
-
     postbuildcommands {
-        '{MKDIR} "../../bin"',
-        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../bin/%{cfg.buildtarget.name}"',
-        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../sandbox/bin/builds/windows/%{cfg.buildtarget.name}"',
+        '{MKDIR} "../../exports/%{cfg.system}/%{cfg.buildcfg}"', -- create dir if its not there!
+        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../exports/%{cfg.system}/%{cfg.buildcfg}/%{cfg.buildtarget.name}"',
+        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../projects/sandbox/bin/builds/%{cfg.system}/%{cfg.buildcfg}/%{cfg.buildtarget.name}"'
     }
 
     files {
@@ -40,12 +37,15 @@ project "lxgl"
 
     includedirs {
         "%{prj.location}/src",
+        "%{lxgl_modules.core}", -- compile
         "%{lxgl_modules.glad}", -- compile
         "%{lxgl_modules.glm}", -- header-only
         "%{lxgl_modules.spdlog}", -- header-only
     }
 
     links {
+        "core",
+        "glad",
         "opengl32.lib"
     }
 

@@ -24,8 +24,8 @@ project "sandbox"
     cppdialect "C++20"
     systemversion "latest"
 
-    targetdir ("bin/builds/%{cfg.system}")
-    objdir ("bin/intermediates/%{cfg.system}")
+    targetdir ("bin/builds/%{cfg.system}/%{cfg.buildcfg}")
+    objdir ("bin/intermediates/%{cfg.system}/%{cfg.buildcfg}")
 
     files {
         "%{prj.location}/**.lua",
@@ -54,18 +54,14 @@ project "sandbox"
     }
 
     links {
+        "core",
         "luminix",
-        "core"
-    }
-
-    defines {
-        "GLFW_INCLUDE_NONE",
-        "_CRT_SECURE_NO_WARNINGS"
+        "lxgl"
     }
 
     postbuildcommands {
-        '{MKDIR} "../../bin"',
-        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../bin/%{cfg.buildtarget.name}"'
+        '{MKDIR} "../../exports/%{cfg.system}/%{cfg.buildcfg}"',
+        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../exports/%{cfg.system}/%{cfg.buildcfg}/%{cfg.buildtarget.name}"'
     }
 
     filter "system:windows" 

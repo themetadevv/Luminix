@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core.h"
+#include "lxcore.h"
 #include <AL/alc.h>
 
 #define USE_DEFAULT_SOUND_DEVICE nullptr

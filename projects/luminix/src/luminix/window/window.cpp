@@ -5,8 +5,34 @@
 #include "../time/time.h"
 #include "window.h"
 
+#include "lxgl/lxgl.h"
+
 namespace Luminix {
 	static bool s_Initialized = false;
+
+	std::string GetVideoModeString(VideoMode vm) {
+		switch (vm) {
+		case VideoMode::Default: {
+			return "Default";
+			break;
+		}
+
+		case VideoMode::Windowed: {
+			return "Windowed";
+			break;
+		}
+
+		case VideoMode::Borderless: {
+			return "Borderless";
+			break;
+		}
+
+		case VideoMode::Fullscreen: {
+			return "Fullscreen";
+			break;
+		}
+		}
+	}
 
 	void Window::SaveWindowedSizePos() {
 		glfwGetWindowPos(m_WindowHandle, &m_SavedWindowedPosition.x, &m_SavedWindowedPosition.y);
@@ -22,10 +48,9 @@ namespace Luminix {
 		int glfw_init_status = glfwInit();
 		LX_ASSERT(glfw_init_status != 0, "glfwInit() returned 0!");
 
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
 		if (m_WindowSpecs.CustomHeader)
 			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
@@ -67,6 +92,9 @@ namespace Luminix {
 
 		if (m_WindowSpecs.State != WindowState::Default)
 			SetWindowState(m_WindowSpecs.State);
+
+		int load_gl_loader_success = LoadOpenGL((GLADloadproc)glfwGetProcAddress);
+		LX_ASSERT(load_gl_loader_success != 0, "Failed to load 'glad GL Loader'!");
 
 		s_Initialized = true;
 	}
@@ -195,16 +223,10 @@ namespace Luminix {
 	}
 
 	void Window::Shutdown() {
+		LX_INFO("Program Elapsed Time : {}", Time::GetElapsedTime());
+
 		glfwSetWindowShouldClose(m_WindowHandle, true);
 		m_Running = false;
-	}
-
-	Vec2<int> Window::GetWindowSize() const {
-		return m_WindowSpecs.Size;
-	}
-
-	Vec2<int> Window::GetWindowPosition() const {
-		return m_WindowSpecs.Position;
 	}
 
 }

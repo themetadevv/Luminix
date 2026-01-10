@@ -1,14 +1,39 @@
 #pragma once
 
-#include "core.h"
+#include "lxcore.h"
 
 #include <GLFW/glfw3.h>
 #include <GLFW/glfw3native.h>
 
 #include "maths.h"
-#include "window_data.h"
 
 namespace Luminix {
+	enum class VideoMode {
+		Default = 0,
+		Windowed,
+		Borderless,
+		Fullscreen
+	};
+
+	enum class WindowState {
+		Default = 0,
+		Minimized,
+		Maximized,
+		Focused
+	};
+
+	LX_API std::string GetVideoModeString(VideoMode vm);
+
+	struct WindowSetting {
+		std::string Title = "GLFW Context Version : 4.6";
+		Vec2<int> Size = { 0, 0 };
+		Vec2<int> Position = { 0, 0 }; // 67-67
+		VideoMode VidMode = VideoMode::Default;
+		WindowState State = WindowState::Default;
+		bool VSync = false;
+		bool CustomHeader = false;
+	};
+
 	class LX_API Window {
 	private:
 		WindowSetting m_WindowSpecs;
@@ -45,8 +70,8 @@ namespace Luminix {
 
 		std::string_view GetWindowTitle() const { return m_WindowSpecs.Title; }
 
-		Vec2<int> GetWindowSize() const;
-		Vec2<int> GetWindowPosition() const;
+		Vec2<int> GetWindowSize() const { return m_WindowSpecs.Size; }
+		Vec2<int> GetWindowPosition() const { return m_WindowSpecs.Position; }
 
 		VideoMode GetCurrentVideoMode() const { return m_WindowSpecs.VidMode; }
 		WindowState GetCurrentWindowState() const { return m_WindowSpecs.State; }

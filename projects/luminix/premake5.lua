@@ -4,6 +4,7 @@
 
 luminix_modules = {
     core = "../../projects/core/src",
+    lxgl = "../../projects/lxgl/src",
     glfw = "../../submodules/glfw/include",
     glad = "../../submodules/glad/include",
     glm = "../../submodules/glm",
@@ -23,21 +24,20 @@ project "luminix"
     cppdialect "C++20"
     systemversion "latest"
 
-    targetdir ("bin/builds/%{cfg.system}")
-    objdir ("bin/intermediates/%{cfg.system}")
+    targetdir ("bin/builds/%{cfg.system}/%{cfg.buildcfg}")
+    objdir ("bin/intermediates/%{cfg.system}/%{cfg.buildcfg}")
 
     pchheader "lxpch.h"
     pchsource "%{prj.location}/src/lxpch.cpp"
 
     defines {
-        "GLFW_INCLUDE_NONE",
-        "_CRT_SECURE_NO_WARNINGS"
+        "GLFW_INCLUDE_NONE"
     }
 
     postbuildcommands {
-        '{MKDIR} "../../bin"',
-        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../bin/%{cfg.buildtarget.name}"',
-        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../sandbox/bin/builds/windows/%{cfg.buildtarget.name}"',
+        '{MKDIR} "../../exports/%{cfg.system}/%{cfg.buildcfg}"', -- create dir if its not there!
+        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../exports/%{cfg.system}/%{cfg.buildcfg}/%{cfg.buildtarget.name}"',
+        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../projects/sandbox/bin/builds/%{cfg.system}/%{cfg.buildcfg}/%{cfg.buildtarget.name}"'
     }
 
     files {
@@ -52,6 +52,7 @@ project "luminix"
         "%{prj.location}/src",
         "%{prj.location}/libs",
         "%{luminix_modules.core}", -- compile
+        "%{luminix_modules.lxgl}", -- compile
         "%{luminix_modules.glfw}", -- compile
         "%{luminix_modules.glad}", -- compile
         "%{luminix_modules.glm}", -- header-only
@@ -64,9 +65,9 @@ project "luminix"
 
     links {
         "core",
+        "lxgl",
         "glfw",
-        "imgui",
-        --"lxgl",
+        "imgui"
     }
 
     filter "configurations:Debug"

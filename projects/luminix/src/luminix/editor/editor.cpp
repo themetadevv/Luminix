@@ -90,6 +90,18 @@ namespace Luminix {
 		return ImGui::Combo(label, current_slot, items);
 	}
 
+	bool BeginMenu(const char* label) {
+		return ImGui::BeginMenu(label);
+	}
+
+	void EndMenu() {
+		ImGui::EndMenu();
+	}
+
+	bool MenuItem(const char* label) {
+		return ImGui::MenuItem(label);
+	}
+
 	//struct WindowDrag {
 	//	bool dragging = false;
 	//	Vec2<int> window_position = { 0, 0 };

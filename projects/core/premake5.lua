@@ -1,6 +1,6 @@
 
 
--- Luminix OpenGL
+-- Core Module
 
 core_modules = {
     spdlog = "../../submodules/spdlog/include"
@@ -12,20 +12,16 @@ project "core"
     cppdialect "C++20"
     systemversion "latest"
 
-    targetdir ("bin/builds/%{cfg.system}")
-    objdir ("bin/intermediates/%{cfg.system}")
+    targetdir ("bin/builds/%{cfg.system}/%{cfg.buildcfg}")
+    objdir ("bin/intermediates/%{cfg.system}/%{cfg.buildcfg}")
 
     pchheader "corepch.h"
     pchsource "%{prj.location}/src/corepch.cpp"
 
-    defines {
-        "_CRT_SECURE_NO_WARNINGS"
-    }
-
     postbuildcommands {
-        '{MKDIR} "../../bin"',
-        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../bin/%{cfg.buildtarget.name}"',
-        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../sandbox/bin/builds/windows/%{cfg.buildtarget.name}"',
+        '{MKDIR} "../../exports/%{cfg.system}/%{cfg.buildcfg}"',
+        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../exports/%{cfg.system}/%{cfg.buildcfg}/%{cfg.buildtarget.name}"',
+        '{COPYFILE} "%{cfg.buildtarget.abspath}" "../../projects/sandbox/bin/builds/%{cfg.system}/%{cfg.buildcfg}/%{cfg.buildtarget.name}"'
     }
 
     files {

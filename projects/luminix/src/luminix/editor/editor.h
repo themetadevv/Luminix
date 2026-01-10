@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core.h"
+#include "lxcore.h"
 #include "maths.h"
 
 #include "editor_enums.h"
@@ -36,6 +36,10 @@ namespace Luminix {
 	);
 
 	LX_API bool ComboBox(const char* label, int* slot, const char* items);
+
+	LX_API bool BeginMenu(const char* label);
+	LX_API void EndMenu();
+	LX_API bool MenuItem(const char* label);
 
 	// AF_API void Header(af::window::Window* window, const char* title, float height, const Color& color = Color(45.0f));
 }

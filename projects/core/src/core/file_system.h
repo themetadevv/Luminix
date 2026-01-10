@@ -1,6 +1,6 @@
 #pragma once
 
-#include "def.h"
+#include "core.h"
 
 namespace Core {
 	class CORE_API FileSystem {

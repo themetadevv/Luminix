@@ -1,6 +1,6 @@
 
 #include "lxpch.h"
-#include "core.h"
+#include "lxcore.h"
 
 #if defined(LX_BUILD_LIB)
 #include <backends/imgui_impl_opengl3.cpp>

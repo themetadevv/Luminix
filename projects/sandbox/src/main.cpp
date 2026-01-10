@@ -3,8 +3,6 @@
 #include <iostream>
 #include <format>
 
-#include "utils.h"
-
 #include "core/file_system.h"
 
 #include "luminix/application.h"
@@ -95,6 +93,16 @@ public:
 		: Application(app_setting)
 	{
 		AddLayer(new AudioManager());
+		SetEditorMenubarCallback([this]() {
+			if (Luminix::BeginMenu("File"))
+			{
+				if (Luminix::MenuItem("Exit"))
+				{
+					GetWindow().Shutdown();
+				}
+				Luminix::EndMenu();
+			}
+	    });
 	}
 };
 

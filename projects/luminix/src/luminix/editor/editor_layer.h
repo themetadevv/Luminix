@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core.h"
+#include "lxcore.h"
 #include "maths.h"
 
 #include "../layer/layer.h"
@@ -20,10 +20,12 @@ namespace Luminix {
 		};
 
 		EditorTheme Theme = EditorTheme::EditorThemeDefault;
+		const char* GLVersion = GLSL_VERSION_4_6; // 4.6 default
 
-		const char* GL_Version = GLSL_VERSION_4_6; // 4.6 default
-
-		bool Dockspace = false;
+		bool EnableKeyboard  = true;
+		bool EnableGamepad   = true;
+		bool EnableDockspace = false;
+		bool EnableViewports = false;
 
 		EditorSetting() = default;
 	};
@@ -32,6 +34,7 @@ namespace Luminix {
 	private:
 		EditorSetting m_EditorSetting;
 		ImGuiContext* m_ImGuiContext;
+		std::function<void()> m_MenubarCallback;
 
 	public:
 		EditorLayer(const EditorSetting& setting = EditorSetting());
@@ -40,8 +43,10 @@ namespace Luminix {
 	public:
 		ImGuiContext* GetContext() const { return m_ImGuiContext; }
 		
-		void BeginRender();
-		void EndRender();
+		void RenderEditor();
+		void EndEditor();
+
+		void SetMenubarCallback(const std::function<void()>& callback) { m_MenubarCallback = callback; }
 
 	public:
 		void OnAttach() override;
