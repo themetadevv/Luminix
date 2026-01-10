@@ -1,7 +1,7 @@
-# OpenGL Application Framework
+# OpenGL Game Engine
 
-A lightweight application framework built on **OpenGL**, inspired by  
-**The Cherno’s Walnut Application Framework**, which is based on **Vulkan**.
+A lightweight game engine framework built on **OpenGL**, inspired by  
+**The Cherno’s Hazel Engine**.
 
 # TO-DO
 Provide a clean structure for building graphical applications using OpenGL
